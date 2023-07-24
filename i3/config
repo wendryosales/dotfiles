@@ -21,7 +21,7 @@
 ## i3 changes the working directory while parsing a config file
 ## so that relative paths are interpreted relative to the directory
 ## of the config file that contains the path:
-#include 01_theme.conf
+# include 01_theme.conf
 
 ## To list all loaded configuration files, run `i3 --moreversion`
 
@@ -321,6 +321,7 @@ tiling_drag modifier titlebar
 #exec [--no-startup-id] <command>
 #exec_always [--no-startup-id] <command>
 exec_always --no-startup-id ~/.config/i3/scripts/i3_autostart
+
 
 ## The --no-startup-id parameter disables startup-notification support for this particular exec command.
 ## With startup-notification, i3 can make sure that a window appears on the workspace on which you used the exec command.

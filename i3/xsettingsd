@@ -5,7 +5,7 @@ Net/IconThemeName "Luv-Folders-Dark"
 Gtk/CursorThemeName "Qogirr-Dark"
 Net/EnableEventSounds "0"
 Net/EnableInputFeedbackSounds "0"
-Xft/DPI "-1"
+Xft/DPI "120" 
 Xft/Hinting 1
 Xft/HintStyle "hintslight"
 Xft/Antialias 1
