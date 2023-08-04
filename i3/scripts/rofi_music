@@ -5,21 +5,23 @@
 # Import Current Theme
 DIR="$HOME/.config/i3"
 RASI="$DIR/theme/rofi/music.rasi"
+spotify_player_path="$HOME/.cargo/bin/spotify_player"
 
 # Theme Elements
-status="`mpc status`"
+status=$($spotify_player_path get key playback 2> /dev/null)
 if [[ -z "$status" ]]; then
 	prompt='Offline'
 	mesg="MPD is Offline"
 else
-	prompt="`mpc -f "%artist%" current`"
-	mesg="`mpc -f "%title%" current` :: `mpc status | grep "#" | awk '{print $3}'`"
+  prompt=$(echo "$status" | jq -r '.item.artists[0].name')
+  mesg=$(echo "$status" | jq -r '.item.name')
 fi
 
 # Options
 layout=`cat ${RASI} | grep 'USE_ICON' | cut -d'=' -f2`
+is_playing=$(echo "$status" | jq -r '.is_playing')
 if [[ "$layout" == 'NO' ]]; then
-	if [[ ${status} == *"[playing]"* ]]; then
+	if [[ "$is_playing" == "true" ]]; then
 		option_1=" Pause"
 	else
 		option_1=" Play"
@@ -30,7 +32,7 @@ if [[ "$layout" == 'NO' ]]; then
 	option_5=" Repeat"
 	option_6=" Random"
 else
-	if [[ ${status} == *"[playing]"* ]]; then
+	if [[ "$is_playing" == "true" ]]; then
 		option_1=""
 	else
 		option_1=""
@@ -46,17 +48,19 @@ fi
 active=''
 urgent=''
 # Repeat
-if [[ ${status} == *"repeat: on"* ]]; then
+repeat_state=$(echo "$status" | jq -r '.repeat_state')
+shuffle_state=$(echo "$status" | jq -r '.shuffle_state')
+if [[ ${repeat_state} == "context" ]]; then
     active="-a 4"
-elif [[ ${status} == *"repeat: off"* ]]; then
+elif [[ ${repeat_state} == "off" ]]; then
     urgent="-u 4"
 else
     option_5=" Parsing Error"
 fi
 # Random
-if [[ ${status} == *"random: on"* ]]; then
+if [[  ${shuffle_state} == "true" ]]; then
     [ -n "$active" ] && active+=",5" || active="-a 5"
-elif [[ ${status} == *"random: off"* ]]; then
+elif [[ ${shuffle_state} == "false" ]]; then
     [ -n "$urgent" ] && urgent+=",5" || urgent="-u 5"
 else
     option_6=" Parsing Error"
@@ -80,17 +84,18 @@ run_rofi() {
 # Execute Command
 run_cmd() {
 	if [[ "$1" == '--opt1' ]]; then
-		mpc -q toggle && kunst --size 60x60 --silent
+		$spotify_player_path playback play-pause
 	elif [[ "$1" == '--opt2' ]]; then
-		mpc -q stop
+		$spotify_player_path playback play-pause
+		$spotify_player_path playback seek 0
 	elif [[ "$1" == '--opt3' ]]; then
-		mpc -q prev && kunst --size 60x60 --silent
+		$spotify_player_path playback previous
 	elif [[ "$1" == '--opt4' ]]; then
-		mpc -q next && kunst --size 60x60 --silent
+		$spotify_player_path playback next
 	elif [[ "$1" == '--opt5' ]]; then
-		mpc -q repeat
+		$spotify_player_path playback repeat
 	elif [[ "$1" == '--opt6' ]]; then
-		mpc -q random
+		$spotify_player_path playback shuffle
 	fi
 }
 

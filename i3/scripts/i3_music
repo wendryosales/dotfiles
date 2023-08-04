@@ -11,5 +11,5 @@ CONFIG="$DIR/alacritty/alacritty.yml"
 
 alacritty --class 'Music,Music' --config-file "$CONFIG" \
 		  -o window.dimensions.columns=109 window.dimensions.lines=22 \
-		  -e ~/.ncmpcpp/scripts/ncmpcpp-art
+		  -e ~/.cargo/bin/spotify_player
 

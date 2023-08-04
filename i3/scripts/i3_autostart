@@ -23,9 +23,6 @@ if [[ ! `pidof xfce-polkit` ]]; then
 	/usr/lib/xfce-polkit/xfce-polkit &
 fi
 
-
-# wallpaper nitrogen
-exec_always --no-startup-id nitrogen --restore
 # Enable power management
 xfce4-power-manager &
 
@@ -48,5 +45,7 @@ xsetroot -cursor_name left_ptr
 # Lauch compositor
 "$idir"/scripts/i3_comp
 
-# Start mpd
+# Starts
 exec mpd &
+exec nitrogen --restore
+exec spotify_player -d
